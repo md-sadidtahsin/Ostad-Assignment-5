@@ -61,3 +61,4 @@ jobs:
           # Example using PM2
           #pm2 stop myapp || true
           pm2 start npm --name "myapp" -- run start
+          pm2 save
