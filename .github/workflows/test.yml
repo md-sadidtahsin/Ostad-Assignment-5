@@ -55,4 +55,4 @@ jobs:
           fi
 
       - name: Run deployment script
-        run: /home/runner/deploy.sh
+        run: /home/ubuntu/deploy.sh
