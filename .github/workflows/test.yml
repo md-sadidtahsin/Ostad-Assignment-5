@@ -8,7 +8,7 @@ on:
 
 jobs:
   test:
-    runs-on: ubuntu-latest   # or ubuntu-latest if you want GitHub's runner
+    runs-on: ubuntu-latest   # GitHub-hosted runner for testing
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -20,19 +20,21 @@ jobs:
 
       - name: Install dependencies
         run: npm install
+        working-directory: node-express-app
 
       - name: Run tests with JSON reporter
         run: |
           npx mocha test/**/*.test.js --reporter json > test-results.json
+        working-directory: node-express-app
 
       - name: Upload test results
         uses: actions/upload-artifact@v4
         with:
           name: test-results
-          path: test-results.json
+          path: node-express-app/test-results.json
 
   deploy:
-    runs-on: self-hosted
+    runs-on: self-hosted     # Your VM for deployment
     needs: test
     steps:
       - name: Checkout code
@@ -54,11 +56,5 @@ jobs:
             echo "✅ All tests passed. Proceeding with deployment."
           fi
 
-      - name: Deploy application
-        run: |
-          echo "Starting deployment..."
-          cd /home/ubuntu/Ostad-Assignment-5
-          # Example using PM2
-          #pm2 stop myapp || true
-          pm2 start npm --name "myapp" -- run start
-          pm2 save
+      - name: Run deployment script
+        run: /home/runner/deploy.sh
